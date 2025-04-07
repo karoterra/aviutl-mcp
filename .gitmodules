@@ -1,0 +1,3 @@
+[submodule "plugin/vendor/aviutl_exedit_sdk"]
+	path = plugin/vendor/aviutl_exedit_sdk
+	url = https://github.com/ePi5131/aviutl_exedit_sdk

@@ -1,0 +1,13 @@
+bin/
+publish/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.env
+
+# C/C++
+build/
+.vs/
+CMakeUserPresets.json

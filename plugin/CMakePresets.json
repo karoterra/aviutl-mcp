@@ -1,0 +1,27 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "default",
+            "binaryDir": "${sourceDir}/build",
+            "generator": "Visual Studio 17 2022",
+            "architecture": "Win32",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_TARGET_TRIPLET": "x86-windows"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "default",
+            "configuration": "Debug"
+        },
+        {
+            "name": "release",
+            "configurePreset": "default",
+            "configuration": "Release"
+        }
+    ]
+}

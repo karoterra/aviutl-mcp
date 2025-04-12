@@ -5,11 +5,19 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "exofile",
+    "exolib",
     "mcp[cli]>=1.6.0",
     "pywin32>=310",
+    "pyyaml>=6.0.2",
 ]
 
 [dependency-groups]
 dev = [
+    "pytest>=8.3.5",
     "ruff>=0.11.4",
 ]
+
+[tool.uv.sources]
+exofile = { git = "https://github.com/Tikubonn/exofile.git" }
+exolib = { git = "https://github.com/Tikubonn/exolib.git" }

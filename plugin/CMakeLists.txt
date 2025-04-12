@@ -19,6 +19,9 @@ add_library(mcp SHARED
     src/pipe_command.h
     src/log.h
     src/log.cpp
+    src/string_helper.h
+    src/exedit_handler.h
+    src/exedit_handler.cpp
 )
 target_include_directories(mcp PRIVATE
     vendor/aviutl_exedit_sdk

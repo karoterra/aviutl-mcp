@@ -5,6 +5,7 @@
 1. 必要なツールをインストールします。
    - CMake
    - Git
+   - vcpkg
    - MSVC (Visual Studio 2022)
    - uv
 2. リポジトリをクローンします。

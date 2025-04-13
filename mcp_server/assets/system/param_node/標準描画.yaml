@@ -1,0 +1,75 @@
+name: "標準描画"
+description: |-
+  オブジェクトを描画するためのノードです。
+  1つのオブジェクトにつき1個だけノードに追加することができます。
+  オブジェクトのノードに追加する場合はノードの最後である必要があります。
+
+params:
+  - name: "ブレンドモード"
+    exo_name: "blend"
+    type: "Int"
+    default: 0
+    description: |-
+      オブジェクトを描画する際のブレンドモードを指定します。
+      0: 通常
+      1: 加算
+      2: 減算
+      3: 乗算
+      4: スクリーン
+      5: オーバーレイ
+      6: 比較(明)
+      7: 比較(暗)
+      8: 輝度
+      9: 色差
+      10: 陰影
+      11: 明暗
+      12: 差分
+
+trackbars:
+  - name: "X"
+    exo_name: "X"
+    type: "FloatTrackBar"
+    default: 0
+    min: -99999.9
+    max: 99999.9
+    description: "オブジェクトのX座標。0で中央に配置されます。"
+
+  - name: "Y"
+    exo_name: "Y"
+    type: "FloatTrackBar"
+    default: 0
+    min: -99999.9
+    max: 99999.9
+    description: "オブジェクトのY座標。0で中央に配置されます。"
+
+  - name: "Z"
+    exo_name: "Z"
+    type: "FloatTrackBar"
+    default: 0
+    min: -99999.9
+    max: 99999.9
+    description: "オブジェクトのZ座標。0で中央に配置されます。"
+
+  - name: "拡大率"
+    exo_name: "拡大率"
+    type: "FloatTrackBar"
+    default: 100.00
+    min: 0
+    max: 5000.00
+    description: "オブジェクトの拡大率。100で元のサイズです。"
+
+  - name: "透明度"
+    exo_name: "透明度"
+    type: "FloatTrackBar"
+    default: 0.0
+    min: 0
+    max: 100.0
+    description: "オブジェクトの透明度。0で完全に不透明、100で完全に透明です。"
+
+  - name: "回転角度"
+    exo_name: "回転"
+    type: "FloatTrackBar"
+    default: 0.00
+    min: -3600.00
+    max: 3600.00
+    description: "オブジェクトの回転角度 (degree)。0で回転なしです。"

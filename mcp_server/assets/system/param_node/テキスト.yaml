@@ -1,0 +1,182 @@
+name: "テキスト"
+description: |-
+  テキストを描画するためのノードです。
+  1つのオブジェクトにつき1個だけノードに追加することができます。
+  オブジェクトのノードに追加する場合はノードの最初である必要があります。
+  このノードを使用する際には必ず「標準描画」ノードを追加してください。
+
+params:
+  - name: "テキスト"
+    exo_name: "text"
+    type: "Text"
+    default: ""
+    description: "テキストオブジェクトに表示する文字列"
+
+  - name: "文字毎に個別オブジェクト"
+    exo_name: "文字毎に個別オブジェクト"
+    type: "Boolean"
+    default: false
+    description: |-
+      trueの場合、文字毎に個別のオブジェクトを生成します。
+      falseの場合、1つのオブジェクトに全ての文字を描画します。
+
+  - name: "文字毎に移動座標上に表示する"
+    exo_name: "文字毎に移動座標上に表示する"
+    type: "Boolean"
+    default: false
+    description: |-
+      trueの場合、文字毎に移動座標上に表示します。
+      falseの場合、オブジェクトの座標上に表示します。
+
+  - name: "自動スクロール"
+    exo_name: "自動スクロール"
+    type: "Boolean"
+    default: false
+    description: |-
+      trueの場合、文字がスクロールします。
+      falseの場合、文字のスクロールは別途設定してください。
+
+  - name: "Bold"
+    exo_name: "B"
+    type: "Boolean"
+    default: false
+    description: |-
+      trueの場合、文字を太字にします。
+      falseの場合、文字は標準の太さです。
+
+  - name: "Italic"
+    exo_name: "I"
+    type: "Boolean"
+    default: false
+    description: |-
+      trueの場合、文字を斜体にします。
+
+  - name: "オブジェクトの長さを自動調整"
+    exo_name: "autoadjust"
+    type: "Boolean"
+    default: false
+    description: |-
+      trueの場合、表示速度に応じてオブジェクトの長さが自動的に調整されます。
+
+  - name: "滑らかにする"
+    exo_name: "soft"
+    type: "Boolean"
+    default: true
+    description: |-
+      trueの場合、文字を滑らかに描画します。
+
+  - name: "等間隔モード"
+    exo_name: "monospace"
+    type: "Boolean"
+    default: false
+    description: |-
+      trueの場合、文字を等間隔に描画します。
+
+  - name: "文字揃え"
+    exo_name: "align"
+    type: "Int"
+    default: 0
+    description: |-
+      文字揃えを指定します。数値で指定してください。
+      0: 左寄せ[上]
+      1: 中央揃え[上]
+      2: 右寄せ[上]
+      3: 左寄せ[中]
+      4: 中央揃え[中]
+      5: 右寄せ[中]
+      6: 左寄せ[下]
+      7: 中央揃え[下]
+      8: 右寄せ[下]
+      9: 縦書 上寄[右]
+      10: 縦書 中央[右]
+      11: 縦書 下寄[右]
+      12: 縦書 上寄[中]
+      13: 縦書 中央[中]
+      14: 縦書 下寄[中]
+      15: 縦書 上寄[左]
+      16: 縦書 中央[左]
+      17: 縦書 下寄[左]
+
+  - name: "文字装飾の種類"
+    exo_name: "type"
+    type: "Int"
+    default: 0
+    description: |-
+      文字装飾の種類を指定します。数値で指定してください。
+      0: 標準文字
+      1: 影付き文字
+      2: 影付き文字(薄)
+      3: 縁取り文字
+      4: 縁取り文字(薄)
+
+  - name: "字間"
+    exo_name: "spacing_x"
+    type: "Int"
+    default: 0
+    description: |-
+      字間を指定します。
+
+  - name: "行間"
+    exo_name: "spacing_y"
+    type: "Int"
+    default: 0
+    description: |-
+      行間を指定します。
+
+  - name: "高精度モード"
+    exo_name: "precision"
+    type: "Boolean"
+    default: true
+    description: |-
+      trueの場合、文字を高精度で描画します。
+
+  - name: "文字色"
+    exo_name: "color"
+    type: "Color"
+    default: [255, 255, 255]
+    description: |-
+      文字の色をRGBの配列で指定します。
+      例: [255, 255, 255]は白色を表します。
+      例: [255, 0, 0]は赤色を表します。
+
+  - name: "陰縁色"
+    exo_name: "color2"
+    type: "Color"
+    default: [255, 255, 255]
+    description: |-
+      文字の陰の色および縁取りの色をRGBの配列で指定します。
+      例: [255, 255, 255]は白色を表します。
+      例: [255, 0, 0]は赤色を表します。
+
+  - name: "陰縁色"
+    exo_name: "color2"
+    type: "Color"
+    default: [255, 255, 255]
+    description: |-
+      文字の陰の色および縁取りの色をRGBの配列で指定します。
+      例: [255, 255, 255]は白色を表します。
+      例: [255, 0, 0]は赤色を表します。
+
+  - name: "フォント"
+    exo_name: "font"
+    type: "String"
+    default: "MS UI Gothic"
+    description: |-
+      文字のフォントを指定します。
+
+trackbars:
+  - name: "サイズ"
+    exo_name: "サイズ"
+    type: "IntTrackBar"
+    default: 34
+    min: 1
+    max: 1000
+    description: "テキストのフォントサイズ"
+
+  - name: "表示速度"
+    exo_name: "表示速度"
+    type: "IntTrackBar"
+    default: 0.0
+    min: 0.0
+    max: 800.0
+    description: "テキストの表示速度"

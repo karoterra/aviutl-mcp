@@ -9,6 +9,7 @@ __pycache__/
 .env
 .pytest_cache/
 .mypy_cache/
+outputs/
 
 # C/C++
 build/

@@ -1,57 +1,139 @@
 import json
-from contextlib import closing
+import urllib
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+from dataclasses import dataclass
+from pathlib import Path
 
-import pywintypes
-import win32file
-from mcp.server.fastmcp import FastMCP
-
-PIPE_NAME = r"\\.\pipe\aviutl_mcp_pipe"
-
-mcp = FastMCP("aviutl_mcp")
+from aviutl_mcp_server.assets import AssetManager
+from aviutl_mcp_server.exo import create_exo
+from aviutl_mcp_server.plugin_ipc import send_message_to_plugin
+from mcp.server.fastmcp import Context, FastMCP
 
 
-def send_message_to_plugin(message: dict) -> dict:
-    handle = None
+@dataclass
+class AppContext:
+    asset_manager: AssetManager
+
+
+@asynccontextmanager
+async def app_lifespan(server: FastMCP) -> AsyncIterator[AppContext]:
+    """アプリケーションのライフサイクル管理"""
+    # アプリケーションの初期化
+    asset_path = Path("./assets")
+    asset_manager = AssetManager(asset_path)
     try:
-        # パイプを開く
-        handle = win32file.CreateFile(
-            PIPE_NAME,
-            win32file.GENERIC_READ | win32file.GENERIC_WRITE,
-            0,
-            None,
-            win32file.OPEN_EXISTING,
-            0,
-            None,
-        )
-        with closing(handle):
-            # メッセージをエンコード
-            msg_str = json.dumps(message).encode("shift_jis")
-            msg_size = len(msg_str)
+        yield AppContext(asset_manager=asset_manager)
+    finally:
+        # クリーンアップ処理
+        pass
 
-            # メッセージのサイズと内容を送信
-            win32file.WriteFile(handle, msg_size.to_bytes(4, "little"))
-            win32file.WriteFile(handle, msg_str)
 
-            # レスポンスのサイズを受信
-            result, size_data = win32file.ReadFile(handle, 4)
-            response_size = int.from_bytes(size_data, "little")
+mcp = FastMCP(
+    "aviutl_mcp",
+    instructions="MCP server for video editing software AviUtl",
+    lifespan=app_lifespan,
+)
 
-            # レスポンスの内容を受信
-            result, data = win32file.ReadFile(handle, response_size)
-            response = json.loads(data.decode("shift_jis"))
+# グローバルなアセットマネージャーを作成
+# 現在のMCP SDKではリソースに対するコンテキストの注入ができないため、
+# 代わりにグローバルなアセットマネージャーを使用する。
+# なおこの問題は将来的に解決されそうではある。
+# https://github.com/modelcontextprotocol/python-sdk/issues/244
+g_asset_path = Path("./assets")
+g_asset_manager = AssetManager(g_asset_path)
 
-            return response
 
-    except pywintypes.error as e:
-        if handle:
-            win32file.CloseHandle(handle)
-        return {"error": str(e)}
+@mcp.resource("aviutl://nodes")
+def get_nodes() -> str:
+    """オブジェクトを追加する際に利用可能なノードの情報を取得する"""
+    asset_manager = g_asset_manager
+    nodes = asset_manager.param_node_assets.assets
+    node_info = [{"name": node.name, "description": node.description} for node in nodes]
+    return json.dumps(node_info, indent=4, ensure_ascii=False)
+
+
+@mcp.resource("aviutl://nodes/{node_name}")
+def get_node_info(node_name: str) -> str:
+    """ノードの情報を取得する
+
+    Args:
+        node_name (str): ノード名
+
+    Returns:
+        str: ノードの情報
+    """
+    asset_manager = g_asset_manager
+    node_name = urllib.parse.unquote(node_name)
+    node = asset_manager.param_node_assets.get_asset(node_name)
+    if node is None:
+        return f"Node '{node_name}' not found."
+    return node.get_mcp_resource()
 
 
 @mcp.tool()
-def get_project_info() -> str:
+def get_project_info(ctx: Context) -> str:
     """AviUtlのプロジェクト情報を取得する"""
     response = send_message_to_plugin({"id": 1, "method": "get_project_info"})
+    if "error" in response:
+        return f"Error: {response['error']}"
+    return json.dumps(response, indent=4, ensure_ascii=False)
+
+
+@mcp.tool()
+def add_object(ctx: Context, frame: int, layer: int, object: dict) -> str:
+    """タイムラインにオブジェクトを追加する
+
+    Args:
+        frame (int): オブジェクトの先頭のフレーム番号。0でシーンの先頭。
+        layer (int): レイヤー番号 (0 - 99)
+        object (dict): オブジェクトの情報
+
+    Example:
+        `object` には以下のような情報を指定します。
+        frame_range には1以上の整数による配列を指定してください。
+        利用可能なノードは `aviutl://nodes` で取得できます。
+        ノードの詳細は `aviutl://nodes/{node_name}` で取得できます。
+        ```json
+        {
+            "overlay": true,
+            "camera": false,
+            "audio": false,
+            "frame_range": [1, 101],
+            "nodes": [
+                {
+                    "name": "テキスト",
+                    "params": {
+                        "テキスト": "テスト",
+                        "文字色": [255, 0, 0]
+                    },
+                    "trackbars": {
+                        "サイズ": 100
+                    }
+                },
+                {
+                    "name": "標準描画",
+                    "trackbars": {
+                        "X": 0,
+                        "Y": 0
+                    }
+                }
+            ]
+        }
+        ```
+    """
+    exopath = Path(__file__).absolute().parent / "outputs" / "mcp.exo"
+    asset_manager: AssetManager = ctx.request_context.lifespan_context.asset_manager
+    exo = create_exo(object, asset_manager)
+    with open(exopath, "w", encoding="cp932") as f:
+        exo.dump(f)
+    response = send_message_to_plugin(
+        {
+            "id": 2,
+            "method": "add_object",
+            "params": {"frame": frame, "layer": layer, "filename": str(exopath)},
+        }
+    )
     if "error" in response:
         return f"Error: {response['error']}"
     return json.dumps(response, indent=4, ensure_ascii=False)

@@ -141,5 +141,42 @@ class ParamNodeAsset:
             **default_params | params,
         )
 
+    def get_mcp_resource(self) -> str:
+        """MCP リソース用のテキストを取得する"""
+
+        params = []
+        for param in self.params:
+            params.append(
+                f"### {param.name}\n"
+                + param.description
+                + "\n\n"
+                + f"param type: {param.param_type.__name__}\n"
+                + f"default: {param.default}\n\n"
+            )
+
+        trackbars = []
+        for trackbar in self.trackbars:
+            trackbars.append(
+                f"### {trackbar.name}\n"
+                + trackbar.description
+                + "\n\n"
+                + f"param type: {trackbar.param_type.__name__}\n"
+                + f"default: {trackbar.default}\n\n"
+            )
+        text = f"""
+## name
+{self.name}
+
+## description
+{self.description}
+
+## available params
+{"".join(params)}
+
+## available trackbars
+{"".join(trackbars)}
+"""
+        return text
+
     def __repr__(self) -> str:
         return f"ParamNodeAsset(path={self.path}, asset_type={self.asset_type})"

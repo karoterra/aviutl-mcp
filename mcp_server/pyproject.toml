@@ -1,8 +1,9 @@
 [project]
-name = "mcp-server"
-version = "0.1.0"
-description = "Add your description here"
+name = "aviutl-mcp-server"
+version = "0.1.dev0"
+description = "AviUtl integration throgh the Model Control Protocol (MCP) server"
 readme = "README.md"
+license = { text = "MIT" }
 requires-python = ">=3.13"
 dependencies = [
     "exofile",
@@ -18,6 +19,18 @@ dev = [
     "ruff>=0.11.4",
 ]
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.uv.sources]
+aviutl-mcp-server = { workspace = true }
 exofile = { git = "https://github.com/Tikubonn/exofile.git" }
 exolib = { git = "https://github.com/Tikubonn/exolib.git" }
+
+[project.urls]
+Homepage = "https://github.com/karoterra/aviutl-mcp"
+
+[[tool.mypy.overrides]]
+module = ["exofile", "exolib"]
+ignore_missing_imports = true

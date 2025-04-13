@@ -25,6 +25,39 @@ wheels = [
 ]
 
 [[package]]
+name = "aviutl-mcp-server"
+version = "0.1.dev0"
+source = { editable = "." }
+dependencies = [
+    { name = "exofile" },
+    { name = "exolib" },
+    { name = "mcp", extra = ["cli"] },
+    { name = "pywin32" },
+    { name = "pyyaml" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "exofile", git = "https://github.com/Tikubonn/exofile.git" },
+    { name = "exolib", git = "https://github.com/Tikubonn/exolib.git" },
+    { name = "mcp", extras = ["cli"], specifier = ">=1.6.0" },
+    { name = "pywin32", specifier = ">=310" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = ">=8.3.5" },
+    { name = "ruff", specifier = ">=0.11.4" },
+]
+
+[[package]]
 name = "certifi"
 version = "2025.1.31"
 source = { registry = "https://pypi.org/simple" }
@@ -166,39 +199,6 @@ wheels = [
 cli = [
     { name = "python-dotenv" },
     { name = "typer" },
-]
-
-[[package]]
-name = "mcp-server"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "exofile" },
-    { name = "exolib" },
-    { name = "mcp", extra = ["cli"] },
-    { name = "pywin32" },
-    { name = "pyyaml" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "exofile", git = "https://github.com/Tikubonn/exofile.git" },
-    { name = "exolib", git = "https://github.com/Tikubonn/exolib.git" },
-    { name = "mcp", extras = ["cli"], specifier = ">=1.6.0" },
-    { name = "pywin32", specifier = ">=310" },
-    { name = "pyyaml", specifier = ">=6.0.2" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pytest", specifier = ">=8.3.5" },
-    { name = "ruff", specifier = ">=0.11.4" },
 ]
 
 [[package]]

@@ -1,5 +1,4 @@
 import json
-import urllib
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
@@ -35,27 +34,19 @@ mcp = FastMCP(
     lifespan=app_lifespan,
 )
 
-# グローバルなアセットマネージャーを作成
-# 現在のMCP SDKではリソースに対するコンテキストの注入ができないため、
-# 代わりにグローバルなアセットマネージャーを使用する。
-# なおこの問題は将来的に解決されそうではある。
-# https://github.com/modelcontextprotocol/python-sdk/issues/244
-g_asset_path = Path("./assets")
-g_asset_manager = AssetManager(g_asset_path)
 
-
-@mcp.resource("aviutl://nodes")
-def get_nodes() -> str:
-    """オブジェクトを追加する際に利用可能なノードの情報を取得する"""
-    asset_manager = g_asset_manager
+@mcp.tool()
+def get_available_nodes(ctx: Context) -> str:
+    """AviUtlでオブジェクトを追加する際に利用可能なノードの情報を取得する"""
+    asset_manager: AssetManager = ctx.request_context.lifespan_context.asset_manager
     nodes = asset_manager.param_node_assets.assets
     node_info = [{"name": node.name, "description": node.description} for node in nodes]
     return json.dumps(node_info, indent=4, ensure_ascii=False)
 
 
-@mcp.resource("aviutl://nodes/{node_name}")
-def get_node_info(node_name: str) -> str:
-    """ノードの情報を取得する
+@mcp.tool()
+def get_node_info(ctx: Context, node_name: str) -> str:
+    """AviUtlのノードの情報を取得する
 
     Args:
         node_name (str): ノード名
@@ -63,8 +54,7 @@ def get_node_info(node_name: str) -> str:
     Returns:
         str: ノードの情報
     """
-    asset_manager = g_asset_manager
-    node_name = urllib.parse.unquote(node_name)
+    asset_manager: AssetManager = ctx.request_context.lifespan_context.asset_manager
     node = asset_manager.param_node_assets.get_asset(node_name)
     if node is None:
         return f"Node '{node_name}' not found."
@@ -92,8 +82,8 @@ def add_object(ctx: Context, frame: int, layer: int, object: dict) -> str:
     Example:
         `object` には以下のような情報を指定します。
         frame_range には1以上の整数による配列を指定してください。
-        利用可能なノードは `aviutl://nodes` で取得できます。
-        ノードの詳細は `aviutl://nodes/{node_name}` で取得できます。
+        利用可能なノードは `get_available_nodes` で取得できます。
+        ノードの詳細は `get_node_info` で取得できます。
         ```json
         {
             "overlay": true,

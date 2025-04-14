@@ -81,7 +81,9 @@ def add_object(ctx: Context, frame: int, layer: int, object: dict) -> str:
 
     Example:
         `object` には以下のような情報を指定します。
-        frame_range には1以上の整数による配列を指定してください。
+        `frame_range` には1以上の整数による配列を指定してください。
+        `frame_range` の要素数は2以上で、最初の要素が最小値、最後の要素が最大値になります。
+        `frame_range` の要素数が3以上の場合、最初の要素と最後の要素以外はキーフレームとして扱われます。
         利用可能なノードは `get_available_nodes` で取得できます。
         ノードの詳細は `get_node_info` で取得できます。
         ```json
@@ -111,6 +113,33 @@ def add_object(ctx: Context, frame: int, layer: int, object: dict) -> str:
             ]
         }
         ```
+
+        `trackbars` の各値に数値を指定するとその値で変化しません。
+        `trackbars` の各値に以下のような辞書を指定すると値を変化させることができます。
+        ```json
+        {
+            "X": {
+                "points": [-200, 200],
+                "type": "Linear",
+                "accelerate": false,
+                "decelerate": false,
+                "parameter": null
+            },
+        }
+        ```
+        `points` には `frame_range` の要素数と同じ数の数値による配列を指定してください。
+        `type` には以下のいずれかを指定してください。
+        - Linear
+        - Acceleration
+        - Curve
+        - Teleportation
+        - Ignore_midpoint
+        - Move_certain_amount
+        - Random
+        - Repetition
+        `accelerate` には真偽値を指定してください。
+        `decelerate` には真偽値を指定してください。
+        `parameter` には整数を指定してください。
     """
     exopath = Path(__file__).absolute().parent / "outputs" / "mcp.exo"
     asset_manager: AssetManager = ctx.request_context.lifespan_context.asset_manager

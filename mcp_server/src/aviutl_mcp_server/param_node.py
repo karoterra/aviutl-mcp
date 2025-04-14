@@ -57,6 +57,8 @@ class ParamNodeItemDefinition:
         self.param_type = self.get_item_type(definition.get("type", ""))
         self.description = definition.get("description", "")
         self.default = definition.get("default", None)
+        self.min = definition.get("min", None)
+        self.max = definition.get("max", None)
 
     def __repr__(self) -> str:
         return f"ParamNodeItemDefinition(name={self.name}, exo_name={self.exo_name}, param_type={self.param_type})"
@@ -161,7 +163,9 @@ class ParamNodeAsset:
                 + trackbar.description
                 + "\n\n"
                 + f"param type: {trackbar.param_type.__name__}\n"
-                + f"default: {trackbar.default}\n\n"
+                + f"default: {trackbar.default}\n"
+                + f"min: {trackbar.min}\n"
+                + f"max: {trackbar.max}\n\n"
             )
         text = f"""
 ## name
